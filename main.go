@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"time"
 )
 
 func holaMundo(w http.ResponseWriter, r *http.Request) {
@@ -23,5 +25,14 @@ func main() {
 	mux.HandleFunc("/", holaMundo)
 
 	mux.Handle("/hola", msg)
-	http.ListenAndServe(":8080", mux)
+
+	server := &http.Server{
+		Addr:              ":8080",
+		Handler:           mux,
+		ReadTimeout:       10 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		MaxHeaderBytes:    1 << 20,
+	}
+	log.Println("Listening...")
+	log.Fatal(server.ListenAndServe())
 }
