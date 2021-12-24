@@ -20,9 +20,13 @@ func (m mensaje) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	msg := mensaje{msg: "<Hola mundo again"}
+	msg := mensaje{msg: "Hola mundo again"}
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", holaMundo)
+	fs := http.FileServer(http.Dir("public"))
+
+	mux.Handle("/", fs)
+	mux.HandleFunc("/hola-mundo", holaMundo)
 
 	mux.Handle("/hola", msg)
 
